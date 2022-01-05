@@ -1,3 +1,5 @@
+const generator = require('string-generator-js')
+
 module.exports = {
-    secret: 'absolutely_secret_token'
+    secret: generator.generate()
 }
