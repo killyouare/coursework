@@ -1,7 +1,6 @@
 {
   "name": "myapp",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
@@ -17,5 +16,15 @@
     "mongoose": "^6.1.4",
     "nodemon": "^2.0.15",
     "string-generator-js": "^2.0.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/killyouare/courswork.git"
+  },
+  "bugs": {
+    "url": "https://github.com/killyouare/courswork/issues"
+  },
+  "homepage": "https://github.com/killyouare/courswork#readme",
+  "description": ""
 }

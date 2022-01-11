@@ -2,7 +2,7 @@ const { model, Schema } = require('mongoose')
 
 
 const Kind = new Schema({
-    name: { required: true, type: String, maxlength: 30 },
+    name: { required: true, type: String, maxlength: 30, unique: true },
     type: { required: true, type: ObjectID, ref: 'Type' }
 })
 

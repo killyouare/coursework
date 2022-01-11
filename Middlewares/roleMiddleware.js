@@ -7,12 +7,8 @@ module.exports = function (roles) {
         if (req.method === "OPTIONS") {
             next()
         }
-
         try {
             const token = (req.headers.authorization).split(' ')[1]
-            if (!token) {
-                return res.status(403).json({ message: "User not authorized " })
-            }
             const { roles: userRoles } = jwt.verify(token, secret)
             let hasRole = false
             userRoles.forEach(role => {
@@ -26,7 +22,7 @@ module.exports = function (roles) {
             next();
         } catch (e) {
             console.log(e)
-            return res.status(403).json({ message: "User not authorized" })
+            return res.status(401).json({ message: "User not authorized" })
         }
     }
 };
