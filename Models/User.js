@@ -6,7 +6,7 @@ const User = new Schema({
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     image: { type: Buffer },
-    roles: [{ type: String, ref: 'Role', required: true }],
+    roles: [{ type: String, ref: 'Role', required: true, default: 'USER' }],
     staff: { type: Boolean, required: true, default: true },
 })
 
