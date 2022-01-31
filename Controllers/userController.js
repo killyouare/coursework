@@ -1,42 +1,22 @@
 const User = require('../Models/User')
 const UserCage = require('../Models/UserCage')
 const Cage = require('../Models/Cage')
-const { validationResult } = require('express-validator')
+const errorExpression = require('../Expressions/error')
+const checkErrors = require('../Expressions/checkErrors')
 
 class UserController {
-    async addRole(req, res) {
+
+    async getUser(req, res) {
         try {
             checkErrors(req, res)
 
-            let { role } = req.body
-            role = role.toUpperCase()
-
-            const newRole = new Role({
-                value: role
-            })
-
-            await newRole.save()
-            return res.status(201).json({
-                data: {
-                    message: `${role} created`
-                }
-            })
-
-        } catch (e) {
-            console.log(e)
-            res.status(400).json({ message: 'Fail' })
-        }
-    }
-    async getUser(req, res) {
-        try {
-            const { id } = req.params.id
+            const { id } = req.params
             const user = await User.findById(id)
+            console.log(user)
 
-            if (!user) {
-                return res.status(400).json({ message: 'User not found' })
-            }
             return res.json({
                 name: user.name,
+                lastname: user.lastname,
                 username: user.username,
                 img: user.img ? user.img : null,
                 staff: user.staff,
@@ -44,25 +24,28 @@ class UserController {
             })
         } catch (e) {
             console.log(e)
-            return res.status(400).json({ message: 'Error' })
+            return errorExpression(res, 401, 'Registration failed')
         }
     }
 
     async indexUsers(req, res) {
         try {
             const users = (await User.
-                find()).
-                map(item => {
+                find())
+                .filter(user => user.staff === true)
+                .map(item => {
                     return {
+                        id: item._id,
                         name: item.name,
+                        lastname: item.lastname,
                         username: item.username,
                         roles: item.roles
                     }
                 })
-            res.json(users)
+            res.json({ data: { users } })
         } catch (e) {
             console.log(e);
-            return res.status(400).json({ message: 'Error' })
+            return errorExpression(res, 401, 'Error')
         }
     }
 
@@ -70,10 +53,6 @@ class UserController {
         try {
             const { id } = req.params.id
             const user = await User.findById(id)
-
-            if (!user) {
-                return res.status(400).json({ message: "User not found" })
-            }
 
             user.staff = false
             user.save()
@@ -83,45 +62,11 @@ class UserController {
             })
         } catch (e) {
             console.log(e)
-            return res.status(400).json({ message: 'Error' })
+            return errorExpression(res, 401, 'Error')
         }
 
     }
 
-    async registration(req, res) {
-        try {
-            const errors = validationResult(req)
-
-            if (errors) {
-                return res.status(422).json({ message: "Vadilation error", errors })
-            }
-
-            const { username, password, name, role } = req.body
-            const candidate = await User.findOne({ username })
-
-            if (candidate) {
-                res.status(400).json({ message: 'User already exists' })
-            }
-
-            const hashPassword = bcrypt.hashSync(password, 7)
-            const userRole = await Role.findOne({ value: role.toUpperCase() })
-
-            if (!userRole) {
-                res.status(400).json({ message: 'Role does not exist' })
-            }
-
-            const user = new User({ name, username, password: hashPassword, roles: [userRole.value] })
-
-            await user.save()
-
-
-            return res.status(201).json({ message: 'User successfully registered' })
-
-        } catch (e) {
-            console.log(e);
-            res.status(400).json({ message: 'Registration failed' });
-        }
-    }
 }
 
 

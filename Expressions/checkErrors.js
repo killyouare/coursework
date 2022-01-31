@@ -11,7 +11,7 @@ const checkErrors = (req, res) => {
     })
 
     if (!isEmpty(errors)) {
-        return errorExpression(res, 422, 'Validation error', errors)
+        throw errorExpression(res, 422, 'Validation error', errors)
     }
 
 }
