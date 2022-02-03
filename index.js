@@ -4,6 +4,7 @@ const authRouter = require('./Routers/authRouter')
 const userRouter = require('./Routers/userRouter')
 const supplyRouter = require('./Routers/supplyRouter')
 const supplierRouter = require('./Routers/supplierRouter')
+const foodRouter = require('./Routers/foodRouter')
 const errorExpression = require('./Expressions/error')
 const PORT = process.env.PORT || 5000
 
