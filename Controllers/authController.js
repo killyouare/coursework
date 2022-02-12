@@ -39,7 +39,8 @@ class authController {
 
     async logout(req, res) {
         try {
-            res.json('logout');
+            res.status(200).json({ data: { message: 'logout' } });
+
         } catch (e) {
             console.log(e);
             return errorExpression(res, 400, 'Unauthorized')
