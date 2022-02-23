@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
 const start = async () => {
     try {
         await mongoose.connect(`mongodb+srv://course:course@cluster0.qpysx.mongodb.net/Coursework?retryWrites=true&w=majority`)
-        app.listen(PORT, () => console.log(`server in running on port ${PORT}`))
+        app.listen(PORT, () => console.log(`server running on http://localhost:${PORT}`))
     }
     catch (e) {
         console.log(e);

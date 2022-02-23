@@ -1,20 +1,10 @@
 const User = require('../Models/User')
 const Role = require('../Models/Role')
-
+const generateAccessToken = require('../Helpers/generateAccessToken')
 const { isEmpty } = require('lodash')
 const bcrypt = require('bcrypt')
-const { secret } = require('../Config/config')
-const jwt = require('jsonwebtoken')
 const errorExpression = require('../Expressions/error')
 const checkErrors = require('../Expressions/checkErrors')
-
-const generateAccessToken = (id, roles) => {
-    const payload = {
-        id,
-        roles
-    }
-    return jwt.sign(payload, secret, { expiresIn: "10h" })
-}
 
 class authController {
     async login(req, res) {
@@ -30,7 +20,7 @@ class authController {
 
             const token = generateAccessToken(user._id, user.roles)
 
-            return res.json({ data: { token } })
+            return res.json({ data: { token, roles: user.roles } })
         } catch (e) {
             console.log(e);
             return errorExpression(res, 401, 'Authentication failed');
@@ -55,7 +45,6 @@ class authController {
             const hashPassword = bcrypt.hashSync(password, 7)
             const userRole = await Role.findOne({ value: role.toUpperCase() })
             const user = new User({ name, lastname, username, password: hashPassword, roles: [userRole.value] })
-
             await user.save()
 
             return res.status(201).json({

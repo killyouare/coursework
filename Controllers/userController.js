@@ -51,6 +51,8 @@ class UserController {
 
     async dismissUser(req, res) {
         try {
+            checkErrors(req, res)
+
             const { id } = req.params.id
             const user = await User.findById(id)
 
@@ -59,6 +61,23 @@ class UserController {
 
             return res.json({
                 message: `${user.username} fiered`
+            })
+        } catch (e) {
+            console.log(e)
+            return errorExpression(res, 401, 'Error')
+        }
+
+    }
+    async updateRole(req, res) {
+        try {
+            checkErrors(req, res)
+            const { id } = req.params.id
+            const { roles } = req.body
+
+            return res.json({
+                data: {
+                    message: 'da'
+                }
             })
         } catch (e) {
             console.log(e)
