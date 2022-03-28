@@ -70,9 +70,9 @@ class UserController {
     }
     async updateRole(req, res) {
         try {
-            checkErrors(req, res)
-            const { id } = req.params.id
-            const { roles } = req.body
+            // checkErrors(req, res)
+
+            const { id, roles } = req.body
 
             return res.json({
                 data: {
@@ -89,4 +89,4 @@ class UserController {
 }
 
 
-module.exports = new UserController
+module.exports = new UserController;

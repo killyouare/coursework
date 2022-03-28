@@ -34,29 +34,20 @@ router.get('/:id/dismiss',
         })
 ], controller.dismissUser)
 
-router.post('/:id/roles', roleMiddleware(['ADMIN'], [
-    check('id')
-        .notEmpty().withMessage('id required')
-        .custom(value => {
-            return User.findById(value).then(user => {
-                console.log(!user)
-                if (!user || user.staff === false) {
-                    return Promise.reject('User not found')
-                }
-            })
-        }),
-    check('roles')
-        .notEmpty().withMessage('roles required')
-        .custom(roles => {
-            roles.forEach(role => {
-                Role.find({ value: role }).then(role => {
-                    if (!role) {
-                        return Promise.reject('Role not found')
-                    }
+router.post('/role',
+    roleMiddleware(['ADMIN'], [
+        check('roles')
+            .notEmpty().withMessage('roles required')
+            .custom(roles => {
+                roles.forEach(role => {
+                    Role.find({ value: role.toUpperCase() }).then(role => {
+                        if (!role) {
+                            return Promise.reject('Role not found')
+                        }
+                    })
                 })
             })
-        })
-], controller.updateRole))
+    ], controller.updateRole))
 
 
 module.exports = router
