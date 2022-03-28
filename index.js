@@ -1,27 +1,15 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const authRouter = require('./Routers/authRouter')
-const userRouter = require('./Routers/userRouter')
-const supplyRouter = require('./Routers/supplyRouter')
-const supplierRouter = require('./Routers/supplierRouter')
-const foodRouter = require('./Routers/foodRouter')
-const errorExpression = require('./Expressions/error')
+
 const cors = require('cors')
 const PORT = process.env.PORT || 5000
 const app = express()
-
+require('./router')(app)
 app.use(express.json())
 app.use(cors({
     origin: '*'
 }))
-app.use('/', authRouter)
-app.use('/user', userRouter)
-app.use('/supplier/', supplierRouter)
-app.use('/supply/', supplyRouter)
-app.use('/food/', foodRouter)
-app.use(function (req, res, next) {
-    return errorExpression(res, 404, 'Page not found');
-});
+
 
 const start = async () => {
     try {
