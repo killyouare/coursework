@@ -4,6 +4,7 @@ const errorExpression = require('../Expressions/error')
 const { check, body } = require('express-validator')
 const controller = require('../Controllers/supplyController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
+const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const Supplier = require('../Models/Supplier')
 
 
@@ -12,7 +13,7 @@ router.post('/add', roleMiddleware(['ADMIN']), [
         .notEmpty().withMessage('Name are required'),
     check('address')
         .notEmpty().withMessage('Address are required'),
-], controller.addSupplier)
+], errorsMiddleware, controller.addSupplier)
 
 router.get('/all', roleMiddleware(['ADMIN']), controller.indexSuppliers)
 

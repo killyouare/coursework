@@ -4,12 +4,10 @@ const generateAccessToken = require('../Helpers/generateAccessToken')
 const { isEmpty } = require('lodash')
 const bcrypt = require('bcrypt')
 const errorExpression = require('../Expressions/error')
-const checkErrors = require('../Expressions/checkErrors')
 
 class authController {
     async login(req, res) {
         try {
-            checkErrors(req, res)
 
             const { username, password } = req.body
             const user = await User.findOne({ username })
@@ -39,7 +37,6 @@ class authController {
 
     async registration(req, res) {
         try {
-            checkErrors(req, res)
 
             const { username, password, name, role, lastname } = req.body
             const hashPassword = bcrypt.hashSync(password, 7)
@@ -62,7 +59,6 @@ class authController {
 
     async addRole(req, res) {
         try {
-            checkErrors(req, res)
             let { role } = req.body
             role = role.toUpperCase()
             const newRole = new Role({ value: role })

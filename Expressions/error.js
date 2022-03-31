@@ -3,7 +3,6 @@ const { isEmpty } = require('lodash')
 const errorExpression = (res, code = 422, message = 'validation error', errors = []) => {
     const data = {
         error: {
-            code: code,
             message: message,
         }
     };

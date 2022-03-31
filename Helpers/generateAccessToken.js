@@ -6,5 +6,5 @@ module.exports = generateAccessToken = (id, roles) => {
         id,
         roles
     }
-    return jwt.sign(payload, secret, { expiresIn: "10h" })
+    return jwt.sign(payload, secret, { expiresIn: "3s" })
 }

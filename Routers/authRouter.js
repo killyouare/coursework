@@ -5,6 +5,7 @@ const { isEmpty } = require('lodash')
 const controller = require('../Controllers/authController')
 const authMiddleware = require('../Middlewares/authMiddleware')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
+const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
 const Role = require('../Models/Role')
 
@@ -19,14 +20,16 @@ router.post('/role', roleMiddleware(['ADMIN']), [
             })
         })
 
-], controller.addRole)
+], errorsMiddleware, controller.addRole)
+
 router.post('/login', [
     check('password')
         .notEmpty()
         .withMessage('Password required'),
     check('username')
         .notEmpty()
-        .withMessage('Username required')],
+        .withMessage('Username required')
+], errorsMiddleware,
     controller.login)
 
 router.get('/logout', authMiddleware, controller.logout)
@@ -55,6 +58,6 @@ router.post('/register', [
                 return Promise.reject('Role not exists')
             }
         }))
-], controller.registration)
+], errorsMiddleware, controller.registration)
 
 module.exports = router

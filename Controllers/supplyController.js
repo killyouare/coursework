@@ -1,12 +1,10 @@
 const { isEmpty } = require('lodash')
 const errorExpression = require('../Expressions/error')
-const checkErrors = require('../Expressions/checkErrors')
 const Supplier = require('../Models/Supplier')
 
 class supplyController {
     async addSupplier(req, res) {
         try {
-            checkErrors(req, res)
 
             const { name, address } = req.body
             const checkSupplier = await Supplier.find({ name: name, address: address })

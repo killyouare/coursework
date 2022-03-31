@@ -3,6 +3,7 @@ const router = new Router()
 const { check } = require('express-validator')
 const controller = require('../Controllers/userController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
+const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
 const Role = require('../Models/Role')
 
@@ -18,7 +19,7 @@ router.get('/:id', roleMiddleware(['ADMIN']), [
                 }
             })
         })
-], controller.getUser)
+], errorsMiddleware, controller.getUser)
 
 router.get('/:id/dismiss',
     roleMiddleware(['ADMIN']), [
@@ -32,7 +33,7 @@ router.get('/:id/dismiss',
                 }
             })
         })
-], controller.dismissUser)
+], errorsMiddleware, controller.dismissUser)
 
 router.post('/role',
     roleMiddleware(['ADMIN'], [
@@ -47,7 +48,7 @@ router.post('/role',
                     })
                 })
             })
-    ], controller.updateRole))
+    ], errorsMiddleware, controller.updateRole))
 
 
 module.exports = router

@@ -1,18 +1,13 @@
 const User = require('../Models/User')
-const UserCage = require('../Models/UserCage')
-const Cage = require('../Models/Cage')
 const errorExpression = require('../Expressions/error')
-const checkErrors = require('../Expressions/checkErrors')
 
 class UserController {
 
     async getUser(req, res) {
         try {
-            checkErrors(req, res)
 
             const { id } = req.params
             const user = await User.findById(id)
-            console.log(user)
 
             return res.json({
                 name: user.name,
@@ -51,7 +46,6 @@ class UserController {
 
     async dismissUser(req, res) {
         try {
-            checkErrors(req, res)
 
             const { id } = req.params.id
             const user = await User.findById(id)
@@ -70,7 +64,6 @@ class UserController {
     }
     async updateRole(req, res) {
         try {
-            // checkErrors(req, res)
 
             const { id, roles } = req.body
 

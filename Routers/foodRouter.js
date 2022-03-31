@@ -3,13 +3,12 @@ const router = new Router()
 const { check } = require('express-validator')
 const controller = require('../Controllers/foodController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
-const Food = require('../Models/Food')
-
+const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 
 router.post('/add', roleMiddleware(['ADMIN']), [
     check('name')
         .notEmpty().withMessage('Name are required'),
     check('lifeTime')
         .notEmpty().withMessage('Lifetime are required'),
-], controller.addFood)
+], errorsMiddleware, controller.addFood)
 module.exports = router
