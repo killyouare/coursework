@@ -6,9 +6,7 @@ const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 
 router.post('/add', roleMiddleware(['ADMIN']), [
-    check('name')
-        .notEmpty().withMessage('Name are required'),
-    check('lifeTime')
-        .notEmpty().withMessage('Lifetime are required'),
+    check(['name', 'fileTime'])
+        .notEmpty().withMessage('Field are required'),
 ], errorsMiddleware, controller.addFood)
 module.exports = router

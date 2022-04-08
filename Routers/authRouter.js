@@ -11,7 +11,7 @@ const Role = require('../Models/Role')
 
 router.post('/role', roleMiddleware(['ADMIN']), [
     check('role')
-        .notEmpty().withMessage('Role required')
+        .notEmpty().withMessage('Field are required')
         .custom(value => {
             return Role.findOne({ value: value.toUpperCase() }).then(role => {
                 if (role) {
@@ -23,23 +23,19 @@ router.post('/role', roleMiddleware(['ADMIN']), [
 ], errorsMiddleware, controller.addRole)
 
 router.post('/login', [
-    check('password')
+    check(['password', "username"])
         .notEmpty()
-        .withMessage('Password required'),
-    check('username')
-        .notEmpty()
-        .withMessage('Username required')
+        .withMessage('Field are required'),
 ], errorsMiddleware,
     controller.login)
 
 router.get('/logout', authMiddleware, controller.logout)
 
 router.post('/register', [
-    check('name', 'Name is required field').notEmpty(),
-    check('lastname', 'Lastname is required field').notEmpty(),
+    check(["name", 'lastname', 'username', 'password', 'role'])
+        .notEmpty().withMessage('Field are required'),
+    check(['username', 'password']).isLength({ min: 5, max: 25 }).withMessage('Field contain at least 5 and no more than 25 characters'),
     check('username')
-        .notEmpty().withMessage('Username is required field')
-        .isLength({ min: 4 }).withMessage('Username must be at least 4 characters')
         .custom(value => {
             return User.findOne({ username: value }).then(user => {
                 if (user) {
@@ -48,11 +44,7 @@ router.post('/register', [
 
             })
         }),
-    check('password')
-        .notEmpty().withMessage('Password required')
-        .isLength({ min: 5, max: 10 }).withMessage('Password contain at least 5 and no more than 10 characters'),
     check('role')
-        .notEmpty().withMessage('Role is required field')
         .custom(value => Role.find({ value: value.toUpperCase() }).then(role => {
             if (isEmpty(role)) {
                 return Promise.reject('Role not exists')

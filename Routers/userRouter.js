@@ -1,6 +1,6 @@
 const Router = require('express')
 const router = new Router()
-const { check } = require('express-validator')
+const { param, check } = require('express-validator')
 const controller = require('../Controllers/userController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
@@ -10,8 +10,7 @@ const Role = require('../Models/Role')
 
 router.get('/all', roleMiddleware(['ADMIN']), controller.indexUsers)
 router.get('/:id', roleMiddleware(['ADMIN']), [
-    check('id')
-        .notEmpty().withMessage('id required')
+    param('id')
         .custom(value => {
             return User.findById(value).then(user => {
                 if (!user || user.staff === false) {
