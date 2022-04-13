@@ -27,7 +27,8 @@ class supplyController {
         try {
             checkErrors(req, res)
 
-            const { supplier, food, address } = req.body
+            const { supplier, food, count } = req.body
+
 
         } catch (e) {
             console.log(e)

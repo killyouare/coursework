@@ -4,23 +4,10 @@ const { check } = require('express-validator')
 const { isEmpty } = require('lodash')
 const controller = require('../Controllers/authController')
 const authMiddleware = require('../Middlewares/authMiddleware')
-const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
 const Role = require('../Models/Role')
 
-router.post('/role', roleMiddleware(['ADMIN']), [
-    check('role')
-        .notEmpty().withMessage('Field are required')
-        .custom(value => {
-            return Role.findOne({ value: value.toUpperCase() }).then(role => {
-                if (role) {
-                    return Promise.reject('Role already exists')
-                }
-            })
-        })
-
-], errorsMiddleware, controller.addRole)
 
 router.post('/login', [
     check(['password', "username"])
@@ -39,7 +26,7 @@ router.post('/register', [
         .custom(value => {
             return User.findOne({ username: value }).then(user => {
                 if (user) {
-                    return Promise.reject('Username must be unique')
+                    return Promise.reject('Username are exists')
                 }
 
             })

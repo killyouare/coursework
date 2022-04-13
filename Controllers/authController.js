@@ -1,41 +1,35 @@
-const User = require('../Models/User')
+
 const Role = require('../Models/Role')
-const generateAccessToken = require('../Helpers/generateAccessToken')
 const { isEmpty } = require('lodash')
-const bcrypt = require('bcrypt')
 const errorExpression = require('../Expressions/error')
-
+const UserService = require('../Service/UserService')
 class authController {
-    async login(req, res) {
+    async login(req, res, next) {
         try {
-
             const { username, password } = req.body
-            const user = await User.findOne({ username })
+            const { user, refreshToken, accessToken } = await UserService.login(username, password)
 
-            if (!user || bcrypt.compareSync(password, user.password) || user.staff === false) {
-                return errorExpression(res, 401, 'Authentication failed')
-            }
+            res.cookie('refreshToken', refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
 
-            const token = generateAccessToken(user._id, user.roles)
-
-            return res.json({ data: { token, roles: user.roles } })
+            return res.json({ data: { token: accessToken, roles: user.roles } })
         } catch (e) {
-            console.log(e);
-            return errorExpression(res, 401, 'Authentication failed');
+            return next(e);
         }
     }
 
-    async logout(req, res) {
+    async logout(req, res, next) {
         try {
-            res.status(200).json({ data: { message: 'logout' } });
+            const { refreshToken } = req.cookie
+            await UserService.logout(refreshToken)
+            res.clearCookie('refreshToken');
+            return res.json({ data: { message: 'logout' } });
 
         } catch (e) {
-            console.log(e);
-            return errorExpression(res, 400, 'Unauthorized')
+            return next(e);
         }
     }
 
-    async registration(req, res) {
+    async registration(req, res, next) {
         try {
 
             const { username, password, name, role, lastname } = req.body
@@ -52,28 +46,7 @@ class authController {
             })
 
         } catch (e) {
-            console.log(e);
-            return errorExpression(res, 400, 'Registration failed')
-        }
-    }
-
-    async addRole(req, res) {
-        try {
-            let { role } = req.body
-            role = role.toUpperCase()
-            const newRole = new Role({ value: role })
-
-            await newRole.save()
-
-            return res.status(201).json({
-                data: {
-                    message: `${role} created`
-                }
-            })
-
-        } catch (e) {
-            console.log(e)
-            return errorExpression(res, 400, 'Creation failed')
+            return next(e)
         }
     }
 }

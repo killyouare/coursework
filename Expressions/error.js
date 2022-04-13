@@ -1,16 +1,18 @@
-const { isEmpty } = require('lodash')
+module.exports = class ApiError extends Error {
+    status;
+    errors;
 
-const errorExpression = (res, code = 422, message = 'validation error', errors = []) => {
-    const data = {
-        error: {
-            message: message,
-        }
-    };
-    if (!isEmpty(errors)) {
-        data['error']['errors'] = errors;
+    constructor(status, message, errors = []) {
+        super(message);
+        this.status = status;
+        this.errors = errors;
     }
 
-    return res.status(code).send(data);
-}
+    static UnauthorizedError() {
+        return new ApiError(401, 'Пользователь не авторизован')
+    }
 
-module.exports = errorExpression
+    static BadRequest(message, errors = []) {
+        return new ApiError(400, message, errors);
+    }
+}

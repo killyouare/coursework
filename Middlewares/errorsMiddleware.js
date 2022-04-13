@@ -1,6 +1,5 @@
-const errorExpression = require('../Expressions/error')
+const ApiError = require('../Expressions/error')
 const { validationResult } = require('express-validator')
-const { isEmpty } = require('lodash')
 
 
 const errorsMiddleware = (req, res, next) => {
@@ -8,19 +7,20 @@ const errorsMiddleware = (req, res, next) => {
         next()
     }
     try {
-        const errors = validationResult(req).errors.map(err => {
+        const errors = validationResult(req).formatWith(({ msg, param }) => {
             return {
-                [err.param]: err.msg
+                [param]: msg
             }
+
         })
 
-        if (!isEmpty(errors)) {
-            throw errorExpression(res, 422, 'Validation error', errors)
+        if (!errors.isEmpty()) {
+            next(ApiError.BadRequest('Validation error', errors.array()))
         }
 
         next();
     } catch (e) {
-        console.log(e)
+        next(e)
     }
 }
 

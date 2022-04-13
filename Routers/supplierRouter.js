@@ -11,13 +11,6 @@ const { isEmpty } = require('lodash');
 router.post('/add', roleMiddleware(['ADMIN']), [
     check(['name', 'address'])
         .notEmpty().withMessage(`Field are required`),
-    check('suppier')
-        .bail()
-        .custom((value, req) =>
-            Supplier.findOne({ name: req.body.name, address: req.body.address }).then(supp =>
-                !isEmpty(supp) ? Promise.reject('Supplier already exists') : true
-            )
-        )
 ], errorsMiddleware, controller.addSupplier)
 
 router.get('/all', roleMiddleware(['ADMIN']), controller.indexSuppliers)

@@ -4,8 +4,8 @@ const { check } = require('express-validator')
 const controller = require('../Controllers/foodController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
-
-router.post('/add', roleMiddleware(['ADMIN']), [
+const authMiddleware = require('..//Middlewares/authMiddleware')
+router.post('/add', authMiddleware, roleMiddleware(['ADMIN']), [
     check(['name', 'fileTime'])
         .notEmpty().withMessage('Field are required'),
 ], errorsMiddleware, controller.addFood)
