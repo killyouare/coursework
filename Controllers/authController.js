@@ -1,8 +1,7 @@
-
 const Role = require('../Models/Role')
-const { isEmpty } = require('lodash')
-const errorExpression = require('../Expressions/error')
 const UserService = require('../Service/UserService')
+const bcrypt = require("bcrypt");
+
 class authController {
     async login(req, res, next) {
         try {

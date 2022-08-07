@@ -1,15 +1,12 @@
 const jwt = require('jsonwebtoken')
 const Token = require('../Models/Token')
 
-
-
-
 class TokenService {
   checkAccess(token) {
     try {
       return jwt.verify(token, process.env.accessToken)
     } catch {
-      return null
+      return false
     }
   }
   checkRefresh(token) {
@@ -25,20 +22,21 @@ class TokenService {
       accessToken: jwt.sign(model, process.env.accessToken, { expiresIn: '30m' })
     }
   }
+
   async createTokenDocument(user) {
     return await Token.create({ user })
   }
 
   async findToken(refreshToken) {
-    return await Token.findOne({ refreshToken });
+    return Token.findOne({ refreshToken });
   }
 
   async saveToken(user, refreshToken) {
-    return await Token.updateOne({ user }, { refreshToken })
+    return Token.updateOne({ user }, { refreshToken })
   }
 
   async removeToken(refreshToken) {
-    return await Token.updateOne({ refreshToken }, { refreshToken: null })
+    return Token.updateOne({ refreshToken }, { refreshToken: null })
   }
 }
 

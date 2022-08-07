@@ -11,6 +11,7 @@ class UserService {
       if (!user || bcrypt.compareSync(password, user.password) || user.staff === false) {
         return new ApiError.UnauthorizedError();
       }
+
       return this.getTokens(user);
     } catch (e) {
       console.log(e)
@@ -19,7 +20,7 @@ class UserService {
   }
   async registration(user) {
     await User.create(user)
-    tokenService.createTokenDocument(user)
+    await tokenService.createTokenDocument(user)
     return this.getTokens(user)
   }
   async getTokens(user) {
@@ -29,6 +30,7 @@ class UserService {
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
     return { ...tokens, user: userDto }
   }
+
   async logout(refreshToken) {
 
   }
