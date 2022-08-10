@@ -10,10 +10,8 @@ RUN chmod +x /wait
 WORKDIR /app
 
 COPY package.json yarn.lock ./
-
 RUN yarn
 
 COPY . ./
 
-CMD /wait && yarn run \
-     $(if [ $DEBUG == 'true' ]; then echo 'dev'; else echo 'start'; fi)
+CMD /wait && yarn run start

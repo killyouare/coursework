@@ -1,49 +1,32 @@
 const jwt = require("jsonwebtoken");
-const Token = require("../Models/Token");
+const { REFRESH_TOKEN, ACCESS_TOKEN } = require("../environment")
 
 class TokenService {
-  checkAccess(token) {
+  static checkAccess(token) {
     try {
-      return jwt.verify(token, process.env.accessToken);
+      return jwt.verify(token, ACCESS_TOKEN);
     } catch {
-      return false;
+      return null
     }
   }
 
-  checkRefresh(token) {
+  static checkRefresh(token) {
     try {
-      return jwt.verify(token, process.env.refreshToken);
+      return jwt.verify(token, REFRESH_TOKEN);
     } catch {
-      return null;
+      return null
     }
   }
 
-  generateTokens(model) {
+  static generateTokens(model) {
     return {
-      refreshToken: jwt.sign(model, process.env.REFRESH_TOKEN, {
+      refreshToken: jwt.sign(model, REFRESH_TOKEN, {
         expiresIn: "15d",
       }),
-      accessToken: jwt.sign(model, process.env.ACCESS_TOKEN, {
-        expiresIn: "30m",
+      accessToken: jwt.sign(model, ACCESS_TOKEN, {
+        expiresIn: "5s",
       }),
     };
   }
-
-  async createTokenDocument(user) {
-    return await Token.create({ user });
-  }
-
-  async findToken(refreshToken) {
-    return Token.findOne({ refreshToken });
-  }
-
-  async saveToken(user, refreshToken) {
-    return Token.updateOne({ user }, { refreshToken });
-  }
-
-  async removeToken(refreshToken) {
-    return Token.updateOne({ refreshToken }, { refreshToken: null });
-  }
-}
-
-module.exports = new TokenService();
+};
+module.exports = TokenService;

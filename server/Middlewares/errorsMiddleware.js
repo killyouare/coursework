@@ -1,21 +1,21 @@
 const ApiError = require('../Expressions/error')
 const { validationResult } = require('express-validator')
 
-
-const errorsMiddleware = (req, res, next) => {
+module.exports = (req, res, next) => {
     if (req.method === 'OPTIONS') {
         next()
     }
 
     try {
-        const errors = validationResult(req).formatWith(({ msg, param }) => {
-            return {
-                [param]: msg
-            }
+        let errors = {};
+
+        validationResult(req).errors.forEach(element => {
+            const { msg, param } = element;
+            errors.hasOwnProperty(param) ? errors[param].push(msg) : errors[param] = [msg]
         })
-        
-        if (!errors.isEmpty()) {
-            next(ApiError.BadRequest('Validation error', errors.array()))
+
+        if (Object.keys(errors).length) {
+            next(ApiError.BadRequest('Validation error', errors))
         }
 
         next();
@@ -23,5 +23,3 @@ const errorsMiddleware = (req, res, next) => {
         next(e)
     }
 }
-
-module.exports = errorsMiddleware

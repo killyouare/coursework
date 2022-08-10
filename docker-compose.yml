@@ -16,6 +16,8 @@ services:
   mongo:
     volumes:
       - ../database/:/data/db:rw
+    ports:
+      - "27017:27017"
 
   mongo-express:
     ports:
