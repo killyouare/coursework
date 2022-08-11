@@ -25,8 +25,6 @@ class supplyController {
 
     async addSupply(req, res) {
         try {
-            checkErrors(req, res)
-
             const { supplier, food, count } = req.body
 
 

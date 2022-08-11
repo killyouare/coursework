@@ -1,26 +1,28 @@
 const Router = require('express')
-const router = new Router()
 const { param, check } = require('express-validator')
-const controller = require('../Controllers/userController')
+const { indexUsers, updateRole, dismissUser, getUser } = require('../Controllers/userController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
 const Role = require('../Models/Role')
+const authMiddleware = require('../Middlewares/authMiddleware')
 
+const router = new Router()
 
-router.get('/all', roleMiddleware(['ADMIN']), controller.indexUsers)
-router.get('/:id', roleMiddleware(['ADMIN']), [
+router.get('/all', authMiddleware, roleMiddleware(['ADMIN']), indexUsers)
+router.get('/:id', authMiddleware, roleMiddleware(['ADMIN']), [
     param('id')
         .custom(value => {
             return User.findById(value).then(user => {
-                if (!user || user.staff === false) {
+                if (!user) {
                     return Promise.reject('User not found')
                 }
             })
         })
-], errorsMiddleware, controller.getUser)
+], errorsMiddleware, getUser)
 
 router.get('/:id/dismiss',
+    authMiddleware,
     roleMiddleware(['ADMIN']), [
     check('id')
         .notEmpty().withMessage('Id required')
@@ -32,7 +34,7 @@ router.get('/:id/dismiss',
                 }
             })
         })
-], errorsMiddleware, controller.dismissUser)
+], errorsMiddleware, dismissUser)
 
 router.post('/role',
     roleMiddleware(['ADMIN'], [
@@ -47,7 +49,7 @@ router.post('/role',
                     })
                 })
             })
-    ], errorsMiddleware, controller.updateRole))
+    ], errorsMiddleware, updateRole))
 
 
 module.exports = router

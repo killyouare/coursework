@@ -2,14 +2,13 @@ const { isEmpty } = require('lodash')
 const errorExpression = require('../Expressions/error')
 const Food = require('../Models/Food')
 class supplyController {
-    async addFood(req, res) {
+    async addFood(req, res, next) {
         try {
             const { name, lifeTime } = req.body
             return res.status(201).json({ data: { name, lifeTime } })
 
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
     }
 

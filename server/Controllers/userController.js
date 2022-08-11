@@ -3,9 +3,8 @@ const errorExpression = require('../Expressions/error')
 
 class UserController {
 
-    async getUser(req, res) {
+    async getUser(req, res, next) {
         try {
-
             const { id } = req.params
             const user = await User.findById(id)
 
@@ -18,16 +17,14 @@ class UserController {
                 roles: user.roles
             })
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Registration failed')
+            next(e)
         }
     }
 
-    async indexUsers(req, res) {
+    async indexUsers(req, res, next) {
         try {
             const users = (await User.
                 find())
-                .filter(user => user.staff === true)
                 .map(item => {
                     return {
                         id: item._id,
@@ -39,26 +36,20 @@ class UserController {
                 })
             res.json({ data: { users } })
         } catch (e) {
-            console.log(e);
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
     }
 
-    async dismissUser(req, res) {
+    async dismissUser(req, res, next) {
         try {
-
             const { id } = req.params.id
-            const user = await User.findById(id)
-
-            user.staff = false
-            user.save()
+            const user = await User.findOneByIdAndUpdate(id, { staff: false })
 
             return res.json({
                 message: `${user.username} fiered`
             })
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
 
     }

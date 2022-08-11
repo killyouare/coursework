@@ -1,24 +1,24 @@
+const { UnauthorizedError } = require('../Expressions/error');
 const ApiError = require('../Expressions/error');
+const User = require('../Models/User');
 const tokenService = require('../Service/TokenService');
 
-module.exports = function (req, res, next) {
+module.exports = async function (req, res, next) {
     try {
-        const authorizationHeader = req.headers.authorization;
-        if (!authorizationHeader) {
-            return next(ApiError.UnauthorizedError());
-        }
-
-        const accessToken = authorizationHeader.split(' ')[1];
+        const accessToken = req.headers.authorization;
         if (!accessToken) {
             return next(ApiError.UnauthorizedError());
         }
 
-        const userData = tokenService.checkAccess(accessToken);
-        if (!userData) {
-            return next(ApiError.UnauthorizedError());
+        const { _id: id } = tokenService.checkAccess(accessToken);
+
+        const user = await User.findById(id)
+
+        if (!user) {
+            throw UnauthorizedError()
         }
 
-        req.user = userData;
+        req.user = user;
         next();
     } catch (e) {
         return next(e);

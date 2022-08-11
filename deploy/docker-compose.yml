@@ -8,7 +8,6 @@ services:
       MONGO_URL: mongodb://mongo:27017/${MONGO_DATABASE:-test}
       REFRESH_TOKEN: ${REFRESH_TOKEN:-my-secret-refresh-token}
       ACCESS_TOKEN: ${ACCESS_TOKEN:-my-secret-access-token}
-      DEBUG: ${DEV:-false}
       WAIT_HOSTS: mongo:27017
     depends_on:
       - mongo

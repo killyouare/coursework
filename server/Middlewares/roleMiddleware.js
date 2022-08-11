@@ -1,3 +1,5 @@
+const ApiError = require("../Expressions/error");
+
 module.exports = function (roles) {
     return function (req, res, next) {
         if (req.method === "OPTIONS") {
@@ -6,16 +8,11 @@ module.exports = function (roles) {
 
         try {
             const { roles: userRoles } = req.user;
-            let hasRole = false
 
-            userRoles.forEach(role => {
-                if (roles.includes(role)) {
-                    hasRole = true
-                }
-            })
+            const filter = userRoles.filter(role => roles.includes(role))
 
-            if (!hasRole) {
-                return res.status(403).json({ message: "User dont have access" })
+            if (!filter.length) {
+                throw ApiError.ForbiddenError()
             }
 
             next();

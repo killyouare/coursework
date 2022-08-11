@@ -1,21 +1,13 @@
 const jwt = require("jsonwebtoken");
-const { REFRESH_TOKEN, ACCESS_TOKEN } = require("../environment")
+const { REFRESH_TOKEN, ACCESS_TOKEN } = require("../environment");
 
 class TokenService {
   static checkAccess(token) {
-    try {
-      return jwt.verify(token, ACCESS_TOKEN);
-    } catch {
-      return null
-    }
+    return jwt.verify(token, ACCESS_TOKEN);
   }
 
   static checkRefresh(token) {
-    try {
-      return jwt.verify(token, REFRESH_TOKEN);
-    } catch {
-      return null
-    }
+    return jwt.verify(token, REFRESH_TOKEN);
   }
 
   static generateTokens(model) {
@@ -24,7 +16,7 @@ class TokenService {
         expiresIn: "15d",
       }),
       accessToken: jwt.sign(model, ACCESS_TOKEN, {
-        expiresIn: "5s",
+        expiresIn: "15m",
       }),
     };
   }

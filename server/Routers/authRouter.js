@@ -11,7 +11,7 @@ const router = new Router();
 router.post(
   "/login",
   [
-    checkEmpty(check(["password", "username"])),
+    checkEmpty(check(["password", "username"])).isString(),
   ],
   errorsMiddleware,
   authController.login
@@ -20,7 +20,7 @@ router.post(
 router.post(
   "/register",
   [
-    checkEmpty(check(["name", "lastname", "username", "password"])),
+    checkEmpty(check(["name", "lastname", "username", "password", "role"])).isString(),
     check(["username", "password"])
       .isLength({
         min: 5,
@@ -34,7 +34,16 @@ router.post(
             return Promise.reject("Field are exists");
           }
         })
-      })
+      }),
+    check("role").custom(async (value) => {
+      if (
+        !(await Role.find({ value: { $not: /ADMIN/i } }))
+          .map(role => role.value)
+          .includes(value)
+      ) {
+        return Promise.reject("Field not exists")
+      }
+    })
   ],
   errorsMiddleware,
   authController.registration
@@ -48,5 +57,10 @@ router.post(
   errorsMiddleware,
   authController.refreshToken
 );
+
+router.get(
+  "/test",
+  authController.test
+)
 
 module.exports = router;
