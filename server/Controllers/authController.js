@@ -20,7 +20,7 @@ class authController {
     static async registration(req, res, next) {
         try {
             const { username, password, name, lastname, role } = req.body
-            const hashPassword = bcrypt.hashSync(password, 7)
+            const hashPassword = await bcrypt.hash(password, 7)
 
             const roleModel = await Role.findOne({ value: role })
 

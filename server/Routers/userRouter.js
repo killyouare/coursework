@@ -6,6 +6,7 @@ const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
 const Role = require('../Models/Role')
 const authMiddleware = require('../Middlewares/authMiddleware')
+const { checkEmpty } = require("../Helpers/helpers")
 
 const router = new Router()
 
@@ -24,8 +25,7 @@ router.get('/:id', authMiddleware, roleMiddleware(['ADMIN']), [
 router.get('/:id/dismiss',
     authMiddleware,
     roleMiddleware(['ADMIN']), [
-    check('id')
-        .notEmpty().withMessage('Id required')
+    checkEmpty(check('id'))
         .custom(value => {
             return User.findById(value).then(user => {
                 console.log(!user)
@@ -38,8 +38,9 @@ router.get('/:id/dismiss',
 
 router.post('/role',
     roleMiddleware(['ADMIN'], [
-        check('roles')
-            .notEmpty().withMessage('roles required')
+        checkEmpty(check('roles'))
+            .isArray()
+            .bail()
             .custom(roles => {
                 roles.forEach(role => {
                     Role.find({ value: role.toUpperCase() }).then(role => {
