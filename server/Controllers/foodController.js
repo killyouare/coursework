@@ -1,8 +1,7 @@
 const { isEmpty } = require('lodash')
-const errorExpression = require('../Expressions/error')
 const Food = require('../Models/Food')
 class supplyController {
-    async addFood(req, res, next) {
+    static async addFood(req, res, next) {
         try {
             const { name, lifeTime } = req.body
             return res.status(201).json({ data: { name, lifeTime } })
@@ -14,4 +13,4 @@ class supplyController {
 
 }
 
-module.exports = new supplyController;
+module.exports = supplyController;

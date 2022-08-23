@@ -1,13 +1,11 @@
 module.exports = class UserDto {
-  roles;
   _id;
+  roles;
   username;
 
-
-
   constructor(model) {
-    this.roles = model.roles;
     this._id = model._id;
+    this.roles = model.roles;
     this.username = model.username;
   }
 }

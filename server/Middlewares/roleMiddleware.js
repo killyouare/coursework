@@ -1,4 +1,4 @@
-const ApiError = require("../Expressions/error");
+const { ForbiddenError } = require("../Expressions/error");
 
 module.exports = function (roles) {
     return function (req, res, next) {
@@ -12,7 +12,7 @@ module.exports = function (roles) {
             const filter = userRoles.filter(role => roles.includes(role))
 
             if (!filter.length) {
-                throw ApiError.ForbiddenError()
+                throw ForbiddenError()
             }
 
             next();

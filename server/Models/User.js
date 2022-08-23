@@ -11,15 +11,12 @@ const User = new Schema({
         type: [String], required: true
     },
     staff: { type: Boolean, required: true, default: true },
+    confirm: { type: Boolean, default: false }
 })
 
 const user = model('User', User)
 
-user.create({ name: "admin", lastname: "admin", username: "admin", password: bcrypt.hashSync("admin", 7), roles: "ADMIN" }, () => console.log())
-user.create({ name: "supplier", lastname: "supplier", username: "supplier", password: bcrypt.hashSync("supplier", 7), roles: "SUPPLIER" }, () => console.log())
-
-User.post("saved", (doc) => {
-    console.log(doc.roles)
-})
+user.create({ name: "admin", lastname: "admin", username: "admin", password: bcrypt.hashSync("admin", 7), confirm: true, roles: "ADMIN" }, () => console.log())
+user.create({ name: "supplier", lastname: "supplier", username: "supplier", password: bcrypt.hashSync("supplier", 7), confirm: true, roles: "SUPPLIER" }, () => console.log())
 
 module.exports = user

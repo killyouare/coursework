@@ -1,8 +1,8 @@
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
-const ApiError = require("../Expressions/error");
 const UserDto = require("../Dtos/UserDto");
-const tokenService = require("./TokenService");
+const { BadRequest, UnauthorizedError } = require("../Expressions/error");
+const { generateTokens } = require("./TokenService");
 
 class UserService {
   static async login(username, password) {
@@ -10,26 +10,46 @@ class UserService {
 
     if (
       !user ||
-      !bcrypt.compareSync(password, user.password) ||
-      user.staff === false
+      !bcrypt.compareSync(password, user.password)
     ) {
-      throw ApiError.UnauthorizedError();
+      throw BadRequest("Incorrect Email or password!");
     }
 
-    return this.getTokens(user);
-  }
+    if (
+      !user.confirm
+    ) {
+      throw BadRequest("User not confirmed")
+    }
 
-  static async registration(user) {
-    user = await User.create(user);
+    if (
+      !user.staff
+    ) {
+      throw BadRequest("User fired")
+    }
+
     return this.getTokens(user);
   }
 
   static getTokens(user) {
     const userDto = new UserDto(user);
 
-    const tokens = tokenService.generateTokens({ ...userDto });
+    const tokens = generateTokens({ ...userDto });
 
     return { ...tokens };
+  }
+
+  static async checkUser(id) {
+
+    const user = await User.findById(id)
+
+    if (!user
+      || !user.confirm
+      || !user.staff
+    ) {
+      throw UnauthorizedError()
+    }
+
+    return user;
   }
 }
 module.exports = UserService;

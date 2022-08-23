@@ -4,7 +4,9 @@ const authController = require("../Controllers/authController");
 const errorsMiddleware = require("../Middlewares/errorsMiddleware");
 const User = require("../Models/User");
 const Role = require("../Models/Role");
-const { checkEmpty } = require("../Helpers/helpers")
+const { checkEmpty } = require("../Helpers/helpers");
+const authMiddleware = require("../Middlewares/authMiddleware");
+const roleMiddleware = require("../Middlewares/roleMiddleware");
 
 const router = new Router();
 
@@ -58,9 +60,16 @@ router.post(
   authController.refreshToken
 );
 
-router.get(
+router.post(
   "/test",
   authController.test
+)
+
+router.post(
+  "/roles",
+  authMiddleware,
+  roleMiddleware("ADMIN"),
+  authController.roles
 )
 
 module.exports = router;

@@ -1,7 +1,21 @@
 const User = require('../Models/User')
-const errorExpression = require('../Expressions/error')
 
 class UserController {
+    async confirmUser(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            await User.findByIdAndUpdate(id, { confirm: true })
+
+            return res.status(200).json({
+                data: {
+                    msg: `User ${id} confirmed`
+                }
+            })
+        } catch (e) {
+            next(e)
+        }
+    }
 
     async getUser(req, res, next) {
         try {
@@ -9,12 +23,16 @@ class UserController {
             const user = await User.findById(id)
 
             return res.json({
-                name: user.name,
-                lastname: user.lastname,
-                username: user.username,
-                img: user.img ? user.img : null,
-                staff: user.staff,
-                roles: user.roles
+                data: {
+                    id: user._id,
+                    name: user.name,
+                    lastname: user.lastname,
+                    username: user.username,
+                    img: user.img ? user.img : null,
+                    staff: user.staff,
+                    roles: user.roles,
+                    confirm: user.confirm
+                }
             })
         } catch (e) {
             next(e)
@@ -31,7 +49,9 @@ class UserController {
                         name: item.name,
                         lastname: item.lastname,
                         username: item.username,
-                        roles: item.roles
+                        roles: item.roles,
+                        staff: item.staff,
+                        confirm: item.confirm
                     }
                 })
             res.json({ data: { users } })
@@ -42,30 +62,33 @@ class UserController {
 
     async dismissUser(req, res, next) {
         try {
-            const { id } = req.params.id
-            const user = await User.findOneByIdAndUpdate(id, { staff: false })
+            const { id } = req.params
+            await User.findByIdAndUpdate(id, { staff: false })
 
-            return res.json({
-                message: `${user.username} fiered`
+            return res.status(200).json({
+                data: {
+                    message: `User ${id} fiered`
+                }
             })
         } catch (e) {
             next(e)
         }
 
     }
+
     async updateRole(req, res) {
         try {
+            const { id } = req.params
+            const { roles } = req.body
+            await User.findByIdAndUpdate(id, { roles: roles.map(i => i.toUpperCase()) })
 
-            const { id, roles } = req.body
-
-            return res.json({
+            return res.status(200).json({
                 data: {
-                    message: 'da'
+                    message: `User ${id} updated`
                 }
             })
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
 
     }

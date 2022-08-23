@@ -10,5 +10,5 @@ router.post('/add', roleMiddleware(['ADMIN']), [
     checkEmpty(check(['name', 'address'])),
 ], errorsMiddleware, controller.addSupplier)
 
-router.get('/all', roleMiddleware(['ADMIN']), controller.indexSuppliers)
+router.post('/all', roleMiddleware(['ADMIN']), controller.indexSuppliers)
 module.exports = router

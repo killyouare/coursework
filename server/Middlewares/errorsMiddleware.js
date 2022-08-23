@@ -1,4 +1,4 @@
-const ApiError = require('../Expressions/error')
+const { BadRequest } = require('../Expressions/error')
 const { validationResult } = require('express-validator')
 
 module.exports = (req, res, next) => {
@@ -11,11 +11,12 @@ module.exports = (req, res, next) => {
 
         validationResult(req).errors.forEach(element => {
             const { msg, param } = element;
+
             errors.hasOwnProperty(param) ? errors[param].push(msg) : errors[param] = [msg]
         })
 
         if (Object.keys(errors).length) {
-            next(ApiError.BadRequest('Validation error', errors))
+            throw BadRequest('Validation error', errors)
         }
 
         next();

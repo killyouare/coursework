@@ -3,7 +3,8 @@
   "packageManager": "yarn@3.2.2",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "nodemon test.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
