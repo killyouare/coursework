@@ -6,6 +6,7 @@ const { MONGO_URL } = require("./Config/environment")
 const PORT = process.env.PORT || 5000;
 const app = express();
 const Connector = require("./Database/Connector")
+
 app.use(express.json());
 
 app.use(function (req, res, next) {
@@ -19,7 +20,7 @@ router(app);
 
 app.use(errorMiddleware);
 
-const start = async () => {
+(async () => {
   try {
     const dbConnector = new Connector(MONGO_URL, {})
 
@@ -31,6 +32,6 @@ const start = async () => {
   } catch (e) {
     console.log(e);
   }
-};
+})();
 
-start();
+

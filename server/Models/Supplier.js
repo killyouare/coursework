@@ -1,8 +1,8 @@
-const { model, Schema } = require('mongoose')
-
+const { model, Schema, ObjectId } = require('mongoose')
 
 const Supplier = new Schema({
-    name: { type: String, required: true },
+    user: { type: ObjectId, Ref: "User", unique: true, required: true },
+    organizationName: { type: String, required: true },
     address: { type: String, required: true, unique: true },
 })
 

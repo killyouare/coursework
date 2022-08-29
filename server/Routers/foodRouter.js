@@ -8,10 +8,16 @@ const { checkEmpty } = require('../Helpers/helpers')
 
 const router = new Router()
 
-router.post('/add', authMiddleware, roleMiddleware(['ADMIN']), [
-    checkEmpty(check(['name', 'fileTime'])),
-],
+router.post('/create',
+    authMiddleware,
+    roleMiddleware(['ADMIN']),
+    [
+        checkEmpty(check(['name', 'manufacture'])),
+        checkEmpty(check(['lifetime']))
+            .isISO8601()
+            .toDate(),
+    ],
     errorsMiddleware,
-    controller.addFood)
+    controller.create)
 
 module.exports = router

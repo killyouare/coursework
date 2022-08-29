@@ -1,7 +1,7 @@
-const User = require('../Models/User')
+const User = require('../Models/User');
 
 class UserController {
-    async confirmUser(req, res, next) {
+    async confirm(req, res, next) {
         try {
             const { id } = req.params;
 
@@ -17,12 +17,12 @@ class UserController {
         }
     }
 
-    async getUser(req, res, next) {
+    async get(req, res, next) {
         try {
             const { id } = req.params
             const user = await User.findById(id)
 
-            return res.json({
+            return res.status(200).json({
                 data: {
                     id: user._id,
                     name: user.name,
@@ -39,7 +39,7 @@ class UserController {
         }
     }
 
-    async indexUsers(req, res, next) {
+    async index(req, res, next) {
         try {
             const users = (await User.
                 find())
@@ -60,7 +60,7 @@ class UserController {
         }
     }
 
-    async dismissUser(req, res, next) {
+    async dismiss(req, res, next) {
         try {
             const { id } = req.params
             await User.findByIdAndUpdate(id, { staff: false })
@@ -73,10 +73,9 @@ class UserController {
         } catch (e) {
             next(e)
         }
-
     }
 
-    async updateRole(req, res) {
+    async updateRoles(req, res, next) {
         try {
             const { id } = req.params
             const { roles } = req.body
@@ -90,9 +89,7 @@ class UserController {
         } catch (e) {
             next(e)
         }
-
     }
-
 }
 
 

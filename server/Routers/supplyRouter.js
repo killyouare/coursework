@@ -1,13 +1,22 @@
 const Router = require('express')
-const router = new Router()
 const { check } = require('express-validator')
 const controller = require('../Controllers/supplyController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
+const { checkEmpty } = require('../Helpers/helpers')
 
-router.post('/add', roleMiddleware(['ADMIN']), [
-  check(['supplier', 'count', 'food'])
-    .notEmpty().withMessage("Field are required")
-], errorsMiddleware, controller.addSupply)
+const router = new Router()
+
+router.post('/create', roleMiddleware(['SUPPLIER']), [
+  checkEmpty(check(['supplier', 'food']))
+],
+  errorsMiddleware,
+  controller.create
+)
+
+router.get('/index',
+  roleMiddleware(['ADMIN']),
+  controller.index
+)
 
 module.exports = router

@@ -1,6 +1,6 @@
 const Router = require('express')
 const { check } = require('express-validator')
-const { indexUsers, updateRole, dismissUser, getUser, confirmUser } = require('../Controllers/userController')
+const { index, updateRoles, dismiss, get, confirm } = require('../Controllers/userController')
 const roleMiddleware = require('../Middlewares/roleMiddleware')
 const errorsMiddleware = require('../Middlewares/errorsMiddleware')
 const User = require('../Models/User')
@@ -10,7 +10,7 @@ const { checkEmpty, checkObjectId } = require("../Helpers/helpers")
 
 const router = new Router()
 
-router.post('/all', authMiddleware, roleMiddleware(['ADMIN']), indexUsers)
+router.post('/all', authMiddleware, roleMiddleware(['ADMIN']), index)
 router.post('/:id', authMiddleware, roleMiddleware(['ADMIN']), [
     checkObjectId(
         checkEmpty(
@@ -24,7 +24,7 @@ router.post('/:id', authMiddleware, roleMiddleware(['ADMIN']), [
                 }
             })
         })
-], errorsMiddleware, getUser)
+], errorsMiddleware, get)
 
 router.post('/:id/confirm',
     authMiddleware,
@@ -52,7 +52,7 @@ router.post('/:id/confirm',
             })
     ],
     errorsMiddleware,
-    confirmUser
+    confirm
 )
 
 router.post('/:id/dismiss',
@@ -74,7 +74,10 @@ router.post('/:id/dismiss',
                 }
             })
         })
-], errorsMiddleware, dismissUser)
+],
+    errorsMiddleware,
+    dismiss
+)
 
 router.post('/:id/role',
     authMiddleware,
@@ -106,7 +109,9 @@ router.post('/:id/role',
             })
 
         })
-], errorsMiddleware, updateRole)
+],
+    errorsMiddleware,
+    updateRoles)
 
 
 module.exports = router

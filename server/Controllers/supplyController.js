@@ -1,40 +1,21 @@
-const { isEmpty } = require('lodash')
-const errorExpression = require('../Expressions/error')
 const Supplier = require('../Models/Supplier')
 
-class supplyController {
-    async addSupplier(req, res) {
-        try {
-
-            const { name, address } = req.body
-            const checkSupplier = await Supplier.find({ name: name, address: address })
-
-            if (!isEmpty(checkSupplier)) {
-                return errorExpression(res, 400, 'Supplier already exists')
-            }
-
-            const supplier = await Supplier.create({ name, address })
-            supplier.save()
-
-            return res.status(200).json({ data: { message: 'Supplier created' } })
-        } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
-        }
-    }
-
-    async addSupply(req, res) {
+class SupplyController {
+    async create(req, res, next) {
         try {
             const { supplier, food, count } = req.body
 
-
+            return res.status(200).json({
+                data: {
+                    msg: "Supply created"
+                }
+            })
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
     }
 
-    async indexSuppliers(req, res) {
+    async index(req, res, next) {
         try {
             const suppliers = (await Supplier.find()).map(item => {
                 return {
@@ -46,11 +27,10 @@ class supplyController {
 
             return res.status(200).json({ data: { suppliers } })
         } catch (e) {
-            console.log(e)
-            return errorExpression(res, 401, 'Error')
+            next(e)
         }
     }
 
 }
 
-module.exports = new supplyController;
+module.exports = new SupplyController;
